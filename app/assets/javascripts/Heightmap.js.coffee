@@ -1,5 +1,13 @@
 class window.Heightmap
   constructor: (img)->
+  	return this
+  fromCanvas: (canvas)->
+  	@w = canvas.attr('width')
+  	@h = canvas.attr('height')
+  	ctx = canvas[0].getContext('2d')
+  	@pixels = ctx.getImageData(0, 0, @w, @h)
+  	return this
+  fromImage: (img)->
     img = img[0]
     @w = img.naturalWidth
     @h = img.naturalHeight
@@ -11,6 +19,7 @@ class window.Heightmap
     ctx.drawImage(img, 0, 0)
     ctx = ctx
     @pixels = ctx.getImageData(0, 0, @w, @h)
+    return this
   get_map: (faces, uvs)->
     if @depthMap then return @depthMap
     scope = this
@@ -41,8 +50,6 @@ class window.Heightmap
       return
     @depthMap = depthMap
     return @depthMap
-
-
   get_pixel: (x, y) ->
     row = x * @w * 4
     col = y * 4
@@ -65,32 +72,32 @@ class window.Heightmap
     pt = @_uv2xy(uv, true)
     @get_pixel(pt.x, pt.y)
 
-  uv2bilerpxy: (uv, w, h, pixels) ->
-    pt = @_uv2xy(uv, false)
+  # uv2bilerpxy: (uv, w, h, pixels) ->
+  #   pt = @_uv2xy(uv, false)
     
-    # Compute XY X'Y' coordinates
-    u = uv.y
-    v = uv.x
-    x = pt.x
-    y = pt.y
-    y1 = Math.floor(y)
-    x1 = Math.floor(x)
-    y2 = y1 + 1
-    x2 = x1 + 1
+  #   # Compute XY X'Y' coordinates
+  #   u = uv.y
+  #   v = uv.x
+  #   x = pt.x
+  #   y = pt.y
+  #   y1 = Math.floor(y)
+  #   x1 = Math.floor(x)
+  #   y2 = y1 + 1
+  #   x2 = x1 + 1
 
-    # Clamp to bounds
-    if y1 < 0
-      y1 = 0
-    if x1 < 0
-      x1 = 0
-    if y2 >= @w
-      y2 = @w
-    if x2 >= @h
-      x2 = @h
+  #   # Clamp to bounds
+  #   if y1 < 0
+  #     y1 = 0
+  #   if x1 < 0
+  #     x1 = 0
+  #   if y2 >= @w
+  #     y2 = @w
+  #   if x2 >= @h
+  #     x2 = @h
 
-    # Bilinear Interpolation
-    Q11 = @get_pixel(x1, y1)
-    Q21 = @get_pixel(x2, y1)
-    Q12 = @get_pixel(x1, y2)
-    Q22 = @get_pixel(x2, y2)
-    calcBilinearInterpolant x1, x, x2, y1, y, y2, Q11, Q21, Q12, Q22
+  #   # Bilinear Interpolation
+  #   Q11 = @get_pixel(x1, y1)
+  #   Q21 = @get_pixel(x2, y1)
+  #   Q12 = @get_pixel(x1, y2)
+  #   Q22 = @get_pixel(x2, y2)
+  #   calcBilinearInterpolant x1, x, x2, y1, y, y2, Q11, Q21, Q12, Q22

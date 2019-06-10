@@ -9,7 +9,20 @@ class window.HeightmapSTL
   constructor: (@hm, @env, @h, @w, @d, @mag, @resolution = 300) ->
     @obj = @box(@w, @h, @d, @resolution)
     this.filename = "model"
+    stl = gui.addFolder('stl')
+    stl.open()
+    stl.add this, "filename"
+    stl.add this, "w"
+    stl.add this, "h"
+    raise_controller = gui.add(this, "mag").min(0.1).max(50).step(1)   
+    stl.add this, "reset"
+    stl.add this, "save"
+    stl.add this, "raise"
+    stl.add this, "toggle"
+    raise_controller.onChange ()-> this.object.raise()
     return  
+  toggle: ()->
+    $('.threejs-container').toggle()
   box: ()->
     w = @w; h = @h; d = @d; resolution = @resolution
     console.log '\tPlaneBox', w, "x", h, "@", resolution
@@ -50,9 +63,7 @@ class window.HeightmapSTL
     depth_map = _.map depth_map, (val, i) ->
       z =  new THREE.Vector3 val.x, val.y, val.z
       return z.multiplyScalar(mag)
-    vertices = @obj.apply_heightmap (vertex, id) ->
-      # vertex.add new THREE.Vector3(0, 0, mag)
-      vertex.add depth_map[id]
+    vertices = @obj.apply_heightmap (vertex, id) -> vertex.add depth_map[id]
     g = this.obj.geometry
 
     console.log "\tUpdating vertices"
@@ -65,6 +76,7 @@ class window.HeightmapSTL
     g.tangentsNeedUpdate = true;
     g.computeFaceNormals()
     g.computeVertexNormals()
+  
   reset: ()->
     g = this.obj.geometry
     orig = g.original
@@ -75,7 +87,6 @@ class window.HeightmapSTL
     g.computeFaceNormals()
     g.computeVertexNormals()
 
-       
   save: (name) ->
     console.log 'Saving', @filename
     # BinaryStlWriter.save @obj.geometry, @filename + ".stl"

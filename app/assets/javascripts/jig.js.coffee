@@ -31,8 +31,6 @@
 //= require THREEx.WindowResize
 //= require STLGenerator
 //= require Heightmap
-//= require ScanWorker
-//= require metamorphehalf/write_binary_stl
 //= require stl-svar
 
 @clone_vec_array = (arr) ->

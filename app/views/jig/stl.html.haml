@@ -1,53 +1,20 @@
+#STLGENERATOR
 :css
-  html, body{
-    height: 100% !important;
-    width: 100% !important;
-    overflow: hidden;
-    margin-bottom: 0 !important;
-  }
-
   .threejs-container{
     width: 100%;
     height: 100%;
+    z-index: 0;
   }
-
-  .dg .c select{
-      color: black !important;
-    }
   .heightmap{
     width: 100px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    
   }
-  .heightmap img{
-      width: 100%;
-    }
-
-
-#STLGENERATOR
 :coffeescript
   $ ->
     $(".heightmap img").load ()->
       env = new ThreeEnv($('.threejs-container'))
       window.gui = new dat.GUI
-      window.hm = new Heightmap($("#heightmap"))
-      window.model = new HeightmapSTL(hm, env, 31.0, 47.7, 0.5, 9.3, 100)
-      gui.add model, "filename"
-      gui.add model, "w"
-      gui.add model, "h"
-      gui.add model, "mag"      
-      gui.add model, "reset"
-      gui.add model, "save"
-      raise_controller = gui.add(model, "raise").min(0.1).max(50).step(1)
-      raise_controller.onChange ()-> this.raise()
-      # pb = new PlaneBox(100, 100, 20, 10, 10, 1, new (THREE.MeshLambertMaterial)(color: new (THREE.Color)(0xffffff)))
-      # env.scene.add pb.mesh
-      
-      # workerTasks()
-      return
+      window.hm = new Heightmap().fromImage($("#heightmap"))
+      window.model = new HeightmapSTL(hm, env, 31.0, 47.7, 0.5, 9.3, 300)
 .heightmap
   = image_tag "/design_31.0_47.7_9.3.png", id: "heightmap"
 .threejs-container

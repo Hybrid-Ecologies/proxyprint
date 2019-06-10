@@ -123,6 +123,7 @@
 
   $ ->
     attachToolHandlers()
+    
     window.dim = new DimensionsPreview($('#sandbox'))
     dim.dom.css
       bottom: 0
@@ -132,28 +133,29 @@
     dim.set 0, 0, 0
 
     window.storage = new WebStorage
+    window.gui = new dat.GUI()
+
     window.factory = new WireWrapTool
       canvas: $('#main-canvas')
 
-    window.gui = new dat.GUI()
+    
     window.design = new design_parameters()
     gui.add design, "name"
+
     window.zoom = new Zoom
     window.materials = new Materials($('#materials'))
     
-    # StatsController.DOM = $('#stat-box')
-    # stats = new StatsController(factory)
-    # if design.json
-    #   resp = $.getJSON design.json.url, (resp) -> factory.loadJSON resp
-    # else
-    #   resp = factory.loadJSON '[["Layer",{"applyMatrix":true}]]'
+    #STLGenerator Setup
+    window.env = new ThreeEnv($('.threejs-container'))
+    $('.threejs-container').hide()
     dropLogic()
-    # return
-
+    
 
 #interface-container.row
-  = render :partial => "toolbox"
+  - render :partial => "toolbox"
   #sandbox.col-xs-8
     %canvas{id: "main-canvas", resize: "resize"}
   = render :partial => "sidebar"
   = render 'collection'
+
+.threejs-container

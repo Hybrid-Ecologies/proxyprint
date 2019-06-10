@@ -309,7 +309,8 @@ class window.WireWrapTool extends PaperDesignTool
   test_addSVG: ()->
     scope = this
     @addSVG
-      url: "/primitives/primitives_open_scroll.svg"
+      # url: "/primitives/primitives_open_scroll.svg"
+      url: "/primitives/primitives_elegant_elle-1.svg"
       position: paper.view.center
       #   mat = Material.detectMaterial(path)
       #   w = new WirePath(scope.paper, value)
@@ -599,34 +600,48 @@ and apply it to a high resolution mesh as a texture map.
 ###
 window.debug = null
 class window.ShapeProxySTL extends ShapeProxy
-  @HEIGHTMAP_RESOLUTION: 0.5
+  @HEIGHTMAP_RESOLUTION: 1.0
   generate_stl: ()->
     scope = this
+
+    # FILL SCREEN AND MOVE TO THE TOP RIGHT CORNER
     paper.view.zoom = 1
     paper.view.update()
     this.g.fitBounds paper.view.bounds
     paper.view.update()
     this.g.pivot = this.g.bounds.topLeft.clone()
     this.g.position = paper.view.bounds.topLeft.clone()
-    window.debug = this.g
-    canvas = $('canvas')[0]
-    ctx = canvas.getContext("2d")
-    b = this.g.bounds
-    
-    # zoom = paper.view.zoom?
-    # paper.view.projectToView(new paper.Point(340*2.5, 480*2.5))
+    copy = ()->
+      # COPY TO NEW CANVAS
+      b = scope.g.bounds
+      $('canvas.heightmap').remove()
+      hm = $('<canvas>')
+        .attr("height", b.height * ShapeProxySTL.HEIGHTMAP_RESOLUTION)
+        .attr("width", b.width * ShapeProxySTL.HEIGHTMAP_RESOLUTION)
+        .css("stroke", "1px solid black")
+        .addClass("heightmap")
+        .appendTo $('body')
 
-    $('canvas.heightmap').remove()
-    hm = $('<canvas>')
-      .attr("height", b.height * ShapeProxySTL.HEIGHTMAP_RESOLUTION)
-      .attr("width", b.width/2)
-      .css("stroke", "1px solid black")
-      .addClass("heightmap")
-      .appendTo $('body')
-    console.log b.height, b.width
+      src_canvas = $('#main-canvas')[0]
+      src_ctx = src_canvas.getContext("2d")
 
-    hm[0].getContext("2d").drawImage canvas, 0, 0, b.width, b.height, 0, 0, b.width * ShapeProxySTL.HEIGHTMAP_RESOLUTION, b.height * ShapeProxySTL.HEIGHTMAP_RESOLUTION
-    hm[0].toBlob (blob)->
+      dst_canvas = hm[0]
+      dst_ctx = dst_canvas.getContext("2d")
+
+
+      console.log "PAPER", src_canvas.width, "x", src_canvas.height
+      console.log "DST", dst_canvas.width, "x", dst_canvas.height
+      console.log "B", b.width, "x", b.height
+
+      dst_ctx.drawImage src_canvas, 0, 0, b.width, b.height, 0, 0, dst_canvas.width, dst_canvas.height
+      window.hm = new Heightmap().fromCanvas($(dst_canvas)) 
+      window.model = new HeightmapSTL(window.hm, env, scope.width, scope.height, 0.5, scope.depth, 300)
+      $('.threejs-container').show()
+    _.delay copy, 1000
+  
+  save_png: ()->
+    hm = $('canvas.heightmap')[0]
+    hm.toBlob (blob)->
       name = [design.name.toLowerCase().replace(/ /g, '_'), scope.width.toFixed(1), scope.height.toFixed(1), scope.depth.toFixed(1)].join("_")
       saveAs(blob, name + ".png");
     return
