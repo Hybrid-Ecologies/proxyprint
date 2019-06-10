@@ -1,0 +1,98 @@
+body, html{
+  width: 100%;
+  height: 100%;
+  background: #666;
+  margin: 0;
+}
+
+canvas.heightmap{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border: 2px solid #00A8E1;
+  background: white;
+}
+label{
+  margin-top: 8px;
+}
+#interface-container{
+  position: relative;
+  overflow-y: hidden;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: #CFF4FF;
+}
+ #sandbox{
+      margin: 0 auto;
+      /*margin-top: 100px;*/
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      /*width: 100%;*/
+      /*border: #DDD solid 3px;*/
+
+  }
+
+  #sandbox canvas{
+    /* height: calc(100% - 30px);*/
+    /* width: calc(100% - 30px);*/
+    border: 1px dotted blue;
+    margin: 15px;
+  }
+
+
+  #zoom-ui{
+    /*position: absolute;*/
+    /*margin: 10px;*/
+    /*z-index: 200;*/
+  }
+#sidebar{
+  position: relative;
+  background: #F1FCFE;
+  height: 100%;
+  padding-bottom: 15px;
+}
+  #sidebar .title{
+    background: #4FB896;
+    color: white;
+    margin-bottom: 15px;
+  }
+  #sidebar .title h4{
+    text-align: center;
+    text-transform: uppercase;
+  }
+  #sidebar footer{
+    width: 93%;
+    border-top: 2px solid #DDD;
+    padding-top: 10px;
+    position: absolute;
+    bottom: 0;
+    margin: 10px auto;
+  }
+  #stat-box{
+    border: solid 2px #CCC;
+    padding: 8px 10px;
+  }
+   
+.shadowed-text {
+  text-shadow: 1px 1px 4px rgba(150, 150, 150, 0.8);
+}
+#toolbox{
+  width: 65%;
+  height: 43px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #DDD;
+  /*border: 3px solid #666;*/
+  padding: 4px;
+  z-index: 200; 
+  font-family: "Glyphter";
+  color: white;
+}
+.shadowed{
+  -webkit-box-shadow: 1px 1px 8px 0px rgba(0,0,0,0.29);
+  -moz-box-shadow: 1px 1px 8px 0px rgba(0,0,0,0.29);
+  box-shadow: 1px 1px 8px 0px rgba(0,0,0,0.29);
+}

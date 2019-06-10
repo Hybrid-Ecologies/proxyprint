@@ -1,0 +1,39 @@
+/ Shader Code
+%script#vertexShader{:type => "x-shader/x-vertex"}
+  :cdata
+    void main() {
+    gl_Position = projectionMatrix *
+    modelViewMatrix *
+    vec4(position,1.0);
+    }
+/ fragment shader a.k.a. pixel shader
+%script#fragmentShader{:type => "x-shader/x-vertex"}
+  :cdata
+    void main() {
+    gl_FragColor = vec4(1.0,  // R
+    0.0,  // G
+    1.0,  // B
+    1.0); // A
+    }
+/ varying float vAmount;
+/
+  \// vAmount = 0.5;
+  \// vAmount = .2126 * bumpData.r + .7152 * bumpData.g + .0722 * bumpData.b;
+  \// assuming map is grayscale it doesn't matter if you use r, g, or b.
+/
+  \// uniform sampler2D bumpTexture;
+  \// uniform float bumpScale;
+  
+  \// varying vec2 vUV;
+  
+  \// void main()
+  \// {
+  \// 	vUV = uv;
+  \// 	vec4 bumpData = texture2D( bumpTexture, uv );
+  
+  
+  \// 	// move the position along the normal
+  \//     vec3 newPosition = position + normal; //* bumpScale * 0.5;
+  
+  \// 	gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+  \// }

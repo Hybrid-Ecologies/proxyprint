@@ -1,0 +1,159 @@
+:coffeescript
+  # .d8888.  .o88b. d8888b. d888888b d8888b. d888888b 
+  # 88'  YP d8P  Y8 88  `8D   `88'   88  `8D `~~88~~' 
+  # `8bo.   8P      88oobY'    88    88oodD'    88    
+  #   `Y8b. 8b      88`8b      88    88~~~      88    
+  # db   8D Y8b  d8 88 `88.   .88.   88         88    
+  # `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
+  
+  window.design = {}
+  #var design = #{@design};
+  window.factory = undefined
+  window.zoom = undefined
+  window.materials = undefined
+  window.storage = undefined
+  window.paper = paper
+
+  dropLogic = ->
+    # DROP LOGIC
+    $('#sandbox canvas').on('drop', (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+      filename = event.originalEvent.dataTransfer.getData('text')
+      position = paper.view.viewToProject(new (paper.Point)(event.originalEvent.x, event.originalEvent.y))
+      filetype = filename.split('.')
+      filetype = filetype[filetype.length - 1]
+      # console.log 'Dropped!', filename, position, event, filetype
+      if filetype == 'svg'
+        factory.addSVG 
+          url: filename
+          position: new paper.Point(position.x, position.y)
+    ).on('dragover', (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+      $(this).addClass 'dragging'
+      return
+    ).on 'dragleave', (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+      $(this).removeClass 'dragging'
+      return
+    $('img').on 'dragstart', (event) ->
+      event.originalEvent.dataTransfer.setData 'text', $(this).attr('src')
+      return
+    return
+  
+  getActiveTool = ->
+    paper.tool.toolholder
+
+  attachToolHandlers = ->
+    $('#bring-to-front').click ->
+      stroke = getActiveTool().selectedStroke
+      if !_.isNull(stroke)
+        stroke.bringToFront()
+    $('#send-to-back').click ->
+      stroke = getActiveTool().selectedStroke
+      if !_.isNull(stroke)
+        stroke.sendToBack()
+    $('#zoom-in').click -> zoom.in()
+    $('#zoom-out').click -> zoom.out()
+    
+    $('#scale').click ->
+      if $(this).hasClass('active')
+        $(this).removeClass 'active'
+        zoom.hide_scale()
+      else
+        $(this).addClass 'active'
+        zoom.show_scale()
+
+    sb = new SidebarController
+
+    $('.download').click ->
+      if $(this).attr('name') == 'svg'
+        $(this).attr('href', 'data:text/svg,' + factory.export(TextureGenerator.SVG)).attr 'download', 'mytexture.svg'
+      else if $(this).attr('name') == 'png'
+        $(this).attr('href', factory.export(TextureGenerator.PNG)).attr 'download', 'mytexture.png'
+    return
+
+  SidebarController = ->
+    $('#materials').change ->
+      matIdx = parseInt($(this).val())
+      material = materials.at(matIdx)
+
+      paths = paper.project.selectedItems
+      _.each paths, (p)->
+        p.setMaterial(material)
+
+      # if factory.activePath
+      #   factory.wirepaths.at(factory.activePath).material = material
+      #   factory.wirepaths.at(factory.activePath).update()
+      #   factory.wirepaths.at(factory.activePath).updateDOM()
+      #   factory.paper.view.update()
+      # return
+    $('#termination-a').change ->
+      terminationType = parseInt($(this).val())
+      if factory.activePath
+        path = factory.wirepaths.at(factory.activePath)
+        path.terminationA = terminationType
+        path.update().updateDOM()
+      return
+    $('#termination-b').change ->
+      terminationType = parseInt($(this).val())
+      if factory.activePath
+        path = factory.wirepaths.at(factory.activePath)
+        path.terminationB = terminationType
+        path.update().updateDOM()
+      return
+    $('#weight-profile').change ->
+      profileType = parseInt($(this).val())
+      if factory.activePath
+        path = factory.wirepaths.at(factory.activePath)
+        path.weight_profile = profileType
+        path.update().updateDOM()
+      return
+    $('#save-progress').click -> factory.save()
+    $('#undo').click -> factory.undo()
+    $('#redo').click -> factory.redo()
+    $('#revert').click -> factory.revert()
+    $('#fast-forward').click -> factory.fast_forward()
+    $('#clear-history').click -> factory.clear_history()
+    return
+  window.design_parameters = ()->
+    @name = "Design"
+
+  $ ->
+    attachToolHandlers()
+    window.dim = new DimensionsPreview($('#sandbox'))
+    dim.dom.css
+      bottom: 0
+      right: 0
+      left: 'auto'
+      top: 'auto'
+    dim.set 0, 0, 0
+
+    window.storage = new WebStorage
+    window.factory = new WireWrapTool
+      canvas: $('#main-canvas')
+
+    window.gui = new dat.GUI()
+    window.design = new design_parameters()
+    gui.add design, "name"
+    window.zoom = new Zoom
+    window.materials = new Materials($('#materials'))
+    
+    # StatsController.DOM = $('#stat-box')
+    # stats = new StatsController(factory)
+    # if design.json
+    #   resp = $.getJSON design.json.url, (resp) -> factory.loadJSON resp
+    # else
+    #   resp = factory.loadJSON '[["Layer",{"applyMatrix":true}]]'
+    dropLogic()
+    # return
+
+
+#interface-container.row
+  = render :partial => "toolbox"
+  #sandbox.col-xs-8
+    %canvas{id: "main-canvas", resize: "resize"}
+  = render :partial => "sidebar"
+  = render 'collection'

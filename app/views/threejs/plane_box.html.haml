@@ -1,0 +1,62 @@
+= javascript_include_tag 'metamorphehalf/planebox', 'data-turbolinks-track' => true
+:javascript
+  var env;
+  var pb;
+  
+  $(function(){
+  	
+  	env = new WebEnv($("#ThreeJS"));
+  
+  	pb = new PlaneBox(100, 100, 20, 10, 10, 1, new THREE.MeshLambertMaterial({
+      color: new THREE.Color(0xffffff)}));
+   	env.scene.add(pb.mesh);
+  	var gui = new dat.GUI();
+  	workerTasks();
+  
+  });
+  
+  function workPackage(texture, geom){
+  	var image = texture.image;
+  	var height = image.height;
+  	var width = image.width;
+  
+  	if(! texture.rgb_calculated) texture.calculateRGB();
+  	this.pixels = texture.imgCanvas.getImageData(0, 0, height, width);
+  	this.faces = geom.faces;
+  	this.faceVertexUvs = geom.faceVertexUvs;
+  }
+  
+  function workerTasks(){
+  	var worker = new Worker('/assets/metamorphehalf/ScanWorker.js');
+  
+  	worker.addEventListener('message', function(e) {
+  	  var depthMap = e.data.map(function(el, i){
+  	  	return new THREE.Vector3(el.x, el.y, el.z);
+  	  });
+  	  console.log('Worker said: ', depthMap, depthMap.length);
+  	}, false);
+  
+  	BumpBox.loadTexture("/heightmap/images/corn.jpg", function(texture){
+  		var wp = new workPackage(texture, pb.mesh.geometry);
+  		worker.postMessage({'wp': wp});
+  	});
+  }
+  
+  
+  function addStats(container){
+  	// STATS
+  	var stats = new Stats();
+  	stats.domElement.style.position = 'relative';
+  	stats.domElement.style.top = '-55px';
+  	stats.domElement.style.left = '0px';
+  	stats.domElement.style.zIndex = 100;
+  	container.appendChild( stats.domElement );
+  	return stats;
+  }
+:css
+  #texture-render{
+  	display: none;
+  }
+.threejs_container
+  #ThreeJS
+%canvas#texture-render

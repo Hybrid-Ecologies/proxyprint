@@ -1,0 +1,25 @@
+= javascript_include_tag 'metamorphehalf/planebox', 'data-turbolinks-track' => true
+= javascript_include_tag 'metamorphehalf/DimensionsPreview', 'data-turbolinks-track' => true
+:javascript
+  var te;
+  TactileController.textures =  #{@files};
+  
+  
+  $(function(){
+  	te = new TactileEnvironment();
+  });
+  
+  
+  function generateURL(){
+  	return {
+  		title: tc.texture + " rendered as " + tc.engine,
+  		href: "height_displacement?engine=" + tc.engine +"&" + "texture=" + tc.texture
+  		}
+  }
+:css
+  #texture-render{
+  	display: none;
+  }
+.threejs_container
+  #ThreeJS
+%canvas#texture-render

@@ -1,0 +1,145 @@
+:css
+  #collection{
+    position: absolute;
+    background: #F1FCFE;
+    /*height: 100%;*/
+    padding-bottom: 0px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-left: 5px;
+    margin-left: 9px;
+    border-radius: 5px;
+    top: 60px;
+    background: #ddd;
+    height: calc(100% - 61px);
+  
+  }
+  #collection-panel{
+     overflow-y: scroll;
+     height: calc(100% - 61px);
+  }
+  #collection.collapsed {
+    left: -22%;
+  }
+  #collection.collapsed .responsive-container{
+    display: none;
+  }
+    #collection .title{
+      background: #4FB896;
+      color: white;
+      margin-left: -5px;
+      /*margin-bottom: 10px;*/
+      padding: 10px;
+    }
+    #collection select{
+      font-size: 14pt;
+      color: black;
+    }
+    #collection .title h4{
+      text-align: left;
+      padding: 0 10px;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+    #collection footer{
+      width: 93%;
+      border-top: 2px solid #DDD;
+      padding-top: 10px;
+      position: absolute;
+      bottom: 0;
+      margin: 10px auto;
+    }
+  
+  
+  .responsive-container {
+      position: relative;
+      /*border-left: 1px solid black;*/
+      /*border-top: 1px solid black;*/
+      height: 100px;
+  }
+  
+  .dummy {
+      padding-top: 100%; /* forces 1:1 aspect ratio */
+  }
+  
+  .img-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+  
+      text-align:center; /* Align center inline elements */
+      font: 0/0 a;
+      background: white;
+      margin-top: 5px;
+      margin-right: 5px;
+  }
+  .img-container:hover{
+  	background: #F1F1F1;
+  }
+  
+  .img-container:before {
+      content: ' ';
+      display: inline-block;
+      vertical-align: middle;
+      height: 100%;
+  }
+  
+  .img-container img {
+      vertical-align: middle;
+      display: inline-block;
+      max-height: 70%;
+      max-width: 70%;
+      cursor: pointer;
+  }
+  .img-container img svg{
+  	color: black;
+  }
+  
+  .noselect {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+  }
+  * {
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: -moz-none;
+      -o-user-select: none;
+      user-select: none;
+  }
+  #toggle-switch{
+    cursor: pointer;
+  }
+ 
+
+:coffeescript
+  files = #{@files.to_json.html_safe};
+  window.collections = undefined
+  $ ->
+    console.log "✓ Collection Interactivity Enabled"
+    $('#collection .title').click ->
+      is_collapsed = $(this).parents('#collection').hasClass('collapsed')
+      if is_collapsed
+        $(this).parents('#collection').removeClass 'collapsed'
+        # $(this).removeClass('glyphicon-arrow-right').addClass 'glyphicon-arrow-left'
+      else
+        $(this).parents('#collection').addClass 'collapsed'
+        # $(this).removeClass('glyphicon-arrow-left').addClass 'glyphicon-arrow-right'
+      return
+    $('#collection select').click (e)->
+      e.stopPropagation()
+    window.collections = new Collection(files)
+    return
+
+
+#collection.collapsed.col-xs-3
+  .title
+    %h4
+      %select#collection-type
+  #collection-panel
