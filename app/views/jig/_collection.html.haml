@@ -121,8 +121,40 @@
 :coffeescript
   files = #{@files.to_json.html_safe};
   window.collections = undefined
+  
+  window.dropLogic = ->
+    # DROP LOGIC
+    $('#sandbox canvas').on('drop', (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+      filename = event.originalEvent.dataTransfer.getData('text')
+      position = paper.view.viewToProject(new (paper.Point)(event.originalEvent.x, event.originalEvent.y))
+      filetype = filename.split('.')
+      filetype = filetype[filetype.length - 1]
+      # console.log 'Dropped!', filename, position, event, filetype
+      if filetype == 'svg'
+        factory.addSVG 
+          url: filename
+          position: new paper.Point(position.x, position.y)
+    ).on('dragover', (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+      $(this).addClass 'dragging'
+      return
+    ).on 'dragleave', (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+      $(this).removeClass 'dragging'
+      return
+    $('img').on 'dragstart', (event) ->
+      event.originalEvent.dataTransfer.setData 'text', $(this).attr('src')
+      return
+    return
+
   $ ->
     console.log "✓ Collection Interactivity Enabled"
+    
+    dropLogic()
     $('#collection .title').click ->
       is_collapsed = $(this).parents('#collection').hasClass('collapsed')
       if is_collapsed
@@ -136,6 +168,7 @@
       e.stopPropagation()
     window.collections = new Collection(files)
     return
+
 
 
 #collection.collapsed.col-xs-3

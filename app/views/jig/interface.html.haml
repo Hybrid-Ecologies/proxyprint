@@ -14,116 +14,19 @@
   window.storage = undefined
   window.paper = paper
 
-  dropLogic = ->
-    # DROP LOGIC
-    $('#sandbox canvas').on('drop', (event) ->
-      event.preventDefault()
-      event.stopPropagation()
-      filename = event.originalEvent.dataTransfer.getData('text')
-      position = paper.view.viewToProject(new (paper.Point)(event.originalEvent.x, event.originalEvent.y))
-      filetype = filename.split('.')
-      filetype = filetype[filetype.length - 1]
-      # console.log 'Dropped!', filename, position, event, filetype
-      if filetype == 'svg'
-        factory.addSVG 
-          url: filename
-          position: new paper.Point(position.x, position.y)
-    ).on('dragover', (event) ->
-      event.preventDefault()
-      event.stopPropagation()
-      $(this).addClass 'dragging'
-      return
-    ).on 'dragleave', (event) ->
-      event.preventDefault()
-      event.stopPropagation()
-      $(this).removeClass 'dragging'
-      return
-    $('img').on 'dragstart', (event) ->
-      event.originalEvent.dataTransfer.setData 'text', $(this).attr('src')
-      return
-    return
-  
-  getActiveTool = ->
-    paper.tool.toolholder
-
-  attachToolHandlers = ->
-    $('#bring-to-front').click ->
-      stroke = getActiveTool().selectedStroke
-      if !_.isNull(stroke)
-        stroke.bringToFront()
-    $('#send-to-back').click ->
-      stroke = getActiveTool().selectedStroke
-      if !_.isNull(stroke)
-        stroke.sendToBack()
-    $('#zoom-in').click -> zoom.in()
-    $('#zoom-out').click -> zoom.out()
-    
-    $('#scale').click ->
-      if $(this).hasClass('active')
-        $(this).removeClass 'active'
-        zoom.hide_scale()
-      else
-        $(this).addClass 'active'
-        zoom.show_scale()
-
-    sb = new SidebarController
-
-    $('.download').click ->
-      if $(this).attr('name') == 'svg'
-        $(this).attr('href', 'data:text/svg,' + factory.export(TextureGenerator.SVG)).attr 'download', 'mytexture.svg'
-      else if $(this).attr('name') == 'png'
-        $(this).attr('href', factory.export(TextureGenerator.PNG)).attr 'download', 'mytexture.png'
-    return
-
   SidebarController = ->
+    # $('select.dropdown').dropdown()
     $('#materials').change ->
+      console.log "MAT", $(this).val()
       matIdx = parseInt($(this).val())
       material = materials.at(matIdx)
-
       paths = paper.project.selectedItems
       _.each paths, (p)->
         p.setMaterial(material)
-
-      # if factory.activePath
-      #   factory.wirepaths.at(factory.activePath).material = material
-      #   factory.wirepaths.at(factory.activePath).update()
-      #   factory.wirepaths.at(factory.activePath).updateDOM()
-      #   factory.paper.view.update()
-      # return
-    $('#termination-a').change ->
-      terminationType = parseInt($(this).val())
-      if factory.activePath
-        path = factory.wirepaths.at(factory.activePath)
-        path.terminationA = terminationType
-        path.update().updateDOM()
-      return
-    $('#termination-b').change ->
-      terminationType = parseInt($(this).val())
-      if factory.activePath
-        path = factory.wirepaths.at(factory.activePath)
-        path.terminationB = terminationType
-        path.update().updateDOM()
-      return
-    $('#weight-profile').change ->
-      profileType = parseInt($(this).val())
-      if factory.activePath
-        path = factory.wirepaths.at(factory.activePath)
-        path.weight_profile = profileType
-        path.update().updateDOM()
-      return
-    $('#save-progress').click -> factory.save()
-    $('#undo').click -> factory.undo()
-    $('#redo').click -> factory.redo()
-    $('#revert').click -> factory.revert()
-    $('#fast-forward').click -> factory.fast_forward()
-    $('#clear-history').click -> factory.clear_history()
     return
-  window.design_parameters = ()->
-    @name = "Design"
+
 
   $ ->
-    attachToolHandlers()
-    
     window.dim = new DimensionsPreview($('#sandbox'))
     dim.dom.css
       bottom: 0
@@ -135,27 +38,36 @@
     window.storage = new WebStorage
     window.gui = new dat.GUI()
 
+    # TOOL SETUP
     window.factory = new WireWrapTool
       canvas: $('#main-canvas')
+      name: "Proxy"
 
-    
-    window.design = new design_parameters()
-    gui.add design, "name"
-
-    window.zoom = new Zoom
+    window.sb = new SidebarController
     window.materials = new Materials($('#materials'))
     
     #STLGenerator Setup
     window.env = new ThreeEnv($('.threejs-container'))
-    $('.threejs-container').hide()
-    dropLogic()
+
+    $('#threejs-modal .header').click ()->
+      $(this).siblings().toggle()
+    $('#threejs-modal .header').click()
+   
     
 
 #interface-container.row
   - render :partial => "toolbox"
-  #sandbox.col-xs-8
+  #sandbox.col-xs-12
     %canvas{id: "main-canvas", resize: "resize"}
   = render :partial => "sidebar"
   = render 'collection'
 
-.threejs-container
+
+#threejs-modal.ui.segments
+  .ui.segment.header 2.5D Model Generator
+  .ui.segment
+    .threejs-container
+  .ui.segment
+    .ui.actions.buttons
+      .ui.approve.button.green Save
+      .ui.cancel.button.red Cancel

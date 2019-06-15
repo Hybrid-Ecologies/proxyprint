@@ -1,10 +1,3 @@
-lambertMaterial = new (THREE.MeshLambertMaterial)(
-  ambient: new (THREE.Color)(0xff0000)
-  color: new (THREE.Color)(0xffffff)
-  specular: new (THREE.Color)(0x00ff00)
-  side: THREE.DoubleSide
-  shininess: 0)
-
 class window.HeightmapSTL
   constructor: (@hm, @env, @h, @w, @d, @mag, @resolution = 300) ->
     @obj = @box(@w, @h, @d, @resolution)
@@ -34,6 +27,9 @@ class window.HeightmapSTL
     h_segments = parseInt(h / seg_size)
 
     geometry = new (THREE.BoxGeometry)(h, w, d, h_segments, w_segments, 1)
+    # geometry = new (THREE.ConeGeometry)(w/2, h, w_segments, h_segments)
+    # geometry = new (THREE.CylinderGeometry)(w/2, w/2, h, w_segments, h_segments)
+    # geometry = new (THREE.SphereGeometry)(w/2, w_segments, w_segments)
     geometry.dynamic = true
     mesh = new THREE.Mesh geometry, lambertMaterial
     
@@ -45,6 +41,7 @@ class window.HeightmapSTL
     # CACHE ORIGINAL AND TOP COORDINATES IDXS
     mesh.geometry.original = clone_vec_array(mesh.geometry.vertices)
     mesh.top_indices = _.compact _.map geometry.vertices, (el, i) -> if el.z >= d / 2.0 then return i
+    # mesh.top_indices = _.compact _.map geometry.vertices, (el, i) -> return i
     mesh.apply_heightmap = (fn)->
       vertices = clone_vec_array(this.geometry.original)
       top = this.top_indices

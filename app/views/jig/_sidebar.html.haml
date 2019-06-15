@@ -2,57 +2,19 @@
   input{
     text-align: left;
   }
-#sidebar.shadowed.col-xs-4
-  #main-title.title.shadowed.row
-    %h4.col-xs-12.shadowed-text Form Design
-  #stat-box
-    %span.glyphicon.glyphicon-print
-    = succeed "\u00A0" do
-      %span#print-time 4 hr 30 min
-    %span.glyphicon.glyphicon-time
-    = succeed "\u00A0" do
-      %span#make-time 30 min
-    %span.glyphicon.glyphicon-paperclip
-    %span#bom-length 1.5 m
-    = button_tag :id=>"calculate-stats", :class=> "pull-right btn-xs btn btn-danger" do
-      %span.glyphicon.glyphicon-repeat
-  %br/
-  .input-group
-    %span#basic-addon1.input-group-addon.glyphicon.glyphicon-file
-    %input#filename.form-control{:placeholder => "Enter a filename", :type => "text"}/
-  #wirepath_controller
-    %label Gauge:
-    %select#materials.form-control
-      %option{"data-color" => "#999", "data-gauge" => "17"} None
-      %option{"data-color" => "#ADB2BD", "data-gauge" => "9"} 9AWG - ALUMINUM
-      %option{"data-color" => "#ADB2BD", "data-gauge" => "14"} 14AWG - ALUMINUM
-      %option{"data-color" => "#CDAD00", "data-gauge" => "16"} 16AWG - GOLD
-      %option{"data-color" => "#C0C0C0", "data-gauge" => "18"} 18AWG - SILVER
-      %option{"data-color" => "#C0C0C0", "data-gauge" => "20"} 20AWG - SILVER
-      %option{"data-color" => "#CDAD00", "data-gauge" => "20"} 20AWG - GOLD
-      %option{"data-color" => "#C0C0C0", "data-gauge" => "24"} 24AWG - SILVER
-      %option{"data-color" => "#CDAD00", "data-gauge" => "28"} 28AWG - GOLD
-      %option{"data-color" => "#B5A642", "data-gauge" => "32"} 32AWG - BRASS
-    .row
-      %label.col-xs-12 Termination Points
-      .col-xs-6
-        %select#termination-a.form-control
-          %option{:value => "0"} None
-          %option{:value => "1"} Extend
-          %option{:value => "2"} Spiral
-          %option{:value => "3"} Coil Loop
-          %option{:value => "4"} Simple Loop
-      .col-xs-6
-        %select#termination-b.form-control
-          %option{:value => "0"} None
-          %option{:value => "1"} Extend
-          %option{:value => "2"} Spiral
-          %option{:value => "3"} Coil Loop
-          %option{:value => "4"} Simple Loop
-    %label Weight:
-    %select#weight-profile.form-control
-      %option{:value => "0"} None
-      %option{:value => "1"} Uniform
-      %option{:value => "2"} Tapered
-      %option{:value => "3"} Unitapered
-  = render :partial => "import_export_footer"
+#sidebar.ui.segment
+  .ui.form
+    .ui.field
+      %label Gauge:
+      %select#materials.dropdown
+        %option{"data-color" => "#999", "data-gauge" => "17"} None
+        %option{"data-color" => "#ADB2BD", "data-gauge" => "9"} 9AWG - ALUMINUM
+        %option{"data-color" => "#ADB2BD", "data-gauge" => "14"} 14AWG - ALUMINUM
+        %option{"data-color" => "#CDAD00", "data-gauge" => "16"} 16AWG - GOLD
+        %option{"data-color" => "#C0C0C0", "data-gauge" => "18"} 18AWG - SILVER
+        %option{"data-color" => "#C0C0C0", "data-gauge" => "20"} 20AWG - SILVER
+        %option{"data-color" => "#CDAD00", "data-gauge" => "20"} 20AWG - GOLD
+        %option{"data-color" => "#C0C0C0", "data-gauge" => "24"} 24AWG - SILVER
+        %option{"data-color" => "#CDAD00", "data-gauge" => "28"} 28AWG - GOLD
+        %option{"data-color" => "#B5A642", "data-gauge" => "32"} 32AWG - BRASS
+       

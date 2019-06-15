@@ -2,8 +2,8 @@ class window.Heightmap
   constructor: (img)->
   	return this
   fromCanvas: (canvas)->
-  	@w = canvas.attr('width')
-  	@h = canvas.attr('height')
+  	@w = parseInt(canvas.attr('width'))
+  	@h = parseInt(canvas.attr('height'))
   	ctx = canvas[0].getContext('2d')
   	@pixels = ctx.getImageData(0, 0, @w, @h)
   	return this

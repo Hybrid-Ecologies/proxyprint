@@ -7,18 +7,16 @@
 //= require paper-core
 //= require numeric.min
 //= require scraps/ruler
+//= require semantic-ui
+
 # DESIGN TOOL
 //= require collection
 //= require WireWrapTool
+//= require proxies/Material
 //= require metamorphehalf/DimensionsPreview
 
 # PROXY GENERATOR
-//= require proxies/utility
-//= require proxies/design_tool
-//= require proxies/zoom
-
-//= require proxies/StatsController
-//= require proxies/Material
+//= require ShapeProxy
 
 # STL GENERATOR
 //= require three
@@ -29,9 +27,9 @@
 //= require ThreeEnv
 //= require THREEx.FullScreen
 //= require THREEx.WindowResize
+//= require stl-svar
 //= require STLGenerator
 //= require Heightmap
-//= require stl-svar
 
 @clone_vec_array = (arr) ->
   clone = []

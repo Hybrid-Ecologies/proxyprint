@@ -1,24 +1,5 @@
-# OBJECTIZED - THREEJS WEBGL SETUP
+# THREEJS WEBGL SETUP
 # Pass the jquery DOM element that holds the scene. 
-
-window.lambertMaterial = new THREE.MeshPhongMaterial
-  ambient: new (THREE.Color)(0xffffff)
-  specular: new (THREE.Color)(0x111111)
-  emissive: new (THREE.Color)(0x000000)
-  side: THREE.DoubleSide
-  shininess: 30
-
-window.addStats = (container) ->
-  # STATS
-  stats = new Stats
-  stats.domElement.style.position = 'relative'
-  stats.domElement.style.top = '-55px'
-  stats.domElement.style.left = '0px'
-  stats.domElement.style.zIndex = 100
-  $(stats.domElement).css 'position', 'absolute'
-  container.appendChild stats.domElement
-  stats
-
 class window.ThreeEnv
   constructor: (dom) ->
     @container
@@ -63,13 +44,12 @@ class window.ThreeEnv
     @renderer.setSize SCREEN_WIDTH, SCREEN_HEIGHT
     container.appendChild @renderer.domElement
     # EVENTS
-    THREEx.WindowResize @renderer, @camera
+    # THREEx.WindowResize @renderer, @camera
     # FULLSCREEN
-    THREEx.FullScreen.bindKey charCode: 'f'.charCodeAt(0)
-    console.log "\t", "Hit 'f' for fullscreen mode"
+    # THREEx.FullScreen.bindKey charCode: 'f'.charCodeAt(0)
+    # console.log "\t", "Hit 'f' for fullscreen mode"
     # CONTROLS
     @controls = new (THREE.OrbitControls)(@camera, @renderer.domElement)
-    
     # $(window).resize ->
       # console.log 'Resized!'
       # THREEx.WindowResize(this.renderer, this.camera);
@@ -106,3 +86,29 @@ class window.ThreeEnv
     skyBox = new (THREE.Mesh)(skyBoxGeometry, skyBoxMaterial)
     @scene.add skyBox
     return
+
+# GLOBALS
+
+window.phongMaterial = new THREE.MeshPhongMaterial
+  ambient: new (THREE.Color)(0xffffff)
+  specular: new (THREE.Color)(0x111111)
+  emissive: new (THREE.Color)(0x000000)
+  side: THREE.DoubleSide
+  shininess: 30
+window.lambertMaterial = new (THREE.MeshLambertMaterial)(
+  ambient: new (THREE.Color)(0xff0000)
+  color: new (THREE.Color)(0xffffff)
+  specular: new (THREE.Color)(0x00ff00)
+  side: THREE.DoubleSide
+  shininess: 0)
+
+window.addStats = (container) ->
+  # STATS
+  stats = new Stats
+  stats.domElement.style.position = 'relative'
+  stats.domElement.style.bottom = '55px'
+  stats.domElement.style.left = '0px'
+  stats.domElement.style.zIndex = 100000
+  $(stats.domElement).css 'position', 'relative'
+  container.appendChild stats.domElement
+  stats

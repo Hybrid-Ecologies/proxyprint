@@ -55,6 +55,7 @@ gem 'devise'
 gem 'mysql2'
 gem 'normalize-rails'
 
+
 gem 'csg'
 gem 'underscore-rails'
 
@@ -63,3 +64,4 @@ gem 'html2haml'
 gem "erb2haml", :group => :development
 gem 'paperjs'
 gem 'alertifyjs-rails'
+gem 'semantic-ui-sass'
